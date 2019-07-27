@@ -1,6 +1,7 @@
 from tkinter import Tk
 import braille as b
 
+
 def get_clipboard():
     root = Tk()
     root.withdraw()
