@@ -38,7 +38,10 @@ def create(target):
                     up = target[i].upper()
                 except:
                     up = target[i]
-                ret.append(latin[up])
+                try:
+                    ret.append(latin[up])
+                except:
+                    pass
         elif check(target) == TEXT_UNKNOWN:
             raise ValueError
         return tuple(ret)
