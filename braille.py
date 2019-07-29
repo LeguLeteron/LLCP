@@ -6,7 +6,7 @@ TEXT_LATIN = 2
 TEXT_UNKNOWN = 3
 
 hangul = support.HangulCharts()
-latin = support.LatinCharts()
+latin = support.LatinCharts().latin
 
 
 def check(target):
@@ -33,10 +33,25 @@ def create(target):
                     pass
                 ret.append(tuple(tmp))
         elif check(target) == TEXT_LATIN:
-            pass
+            for i in range(len(target)):
+                try:
+                    up = target[i].upper()
+                except:
+                    up = target[i]
+                ret.append(latin[up])
         elif check(target) == TEXT_UNKNOWN:
             raise ValueError
         return tuple(ret)
+
+
+def show_one(target, count):
+    if target is support.ON:
+        print("•", end=' ')
+    else:
+        print("◦", end=' ')
+
+    if (count % 2) is 0:
+        print("\n", end='')
 
 
 def show(target, mode):
@@ -44,16 +59,15 @@ def show(target, mode):
     if type(target) is not tuple:
         raise RuntimeError
 
+    count = 0
     if mode == TEXT_HANGUL:
-        count = 0
         for i in target:
             for j in i:
                 for k in j:
                     count += 1
-                    if k is support.ON:
-                        print("•", end=' ')
-                    else:
-                        print("◦", end=' ')
-
-                    if (count % 2) is 0:
-                        print("\n", end='')
+                    show_one(k, count)
+    elif mode == TEXT_LATIN:
+        for i in target:
+            for j in i:
+                count += 1
+                show_one(j, count)
