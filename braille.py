@@ -1,76 +1,74 @@
 import hgtk
 import braille_support as support
 
-TEXT_HANGUL = 1
-TEXT_LATIN = 2
-TEXT_UNKNOWN = 3
+HANGUL = 1
+LATIN = 2
+OTHERS = 3
 
 hangul = support.HangulCharts()
 latin = support.LatinCharts().latin
 
 
+def remove_acl_violation(target):
+    acl = list()
+    acl += list(map(chr, range(ord('a'), ord('z'))))
+    acl += list(map(chr, range(ord('A'), ord('Z'))))
+    acl += list(map(chr, range(ord('1'), ord('9'))))
+    ret = ""
+    for i in target:
+        if i in acl or hgtk.checker.is_hangul(i):
+            ret += i
+    return ret
+
+
 def check(target):
-    if hgtk.checker.is_hangul(target):
-        return TEXT_HANGUL
-    elif hgtk.checker.is_latin1(target):
-        return TEXT_LATIN
+    target = remove_acl_violation(target)
+
+    if hgtk.checker.is_latin1(target):
+        return LATIN
+    elif hgtk.checker.is_hangul(target):
+        return HANGUL
     else:
-        return TEXT_UNKNOWN
+        return OTHERS
 
 
 def create(target):
-        l, ret = list(), list()
-        if check(target) is TEXT_HANGUL:
-            l = hgtk.text.decompose(target).split("ᴥ")
+    target = remove_acl_violation(target)
 
-            for i in l:
-                tmp = list()
-                try:
-                    tmp.append(hangul.initial[i[0]])
-                    tmp.append(hangul.vowel[i[1]])
-                    tmp.append(hangul.final[i[2]])
-                except:
-                    pass
-                ret.append(tuple(tmp))
-        elif check(target) == TEXT_LATIN:
-            for i in range(len(target)):
-                try:
-                    up = target[i].upper()
-                except:
-                    up = target[i]
-                try:
-                    ret.append(latin[up])
-                except:
-                    pass
-        elif check(target) == TEXT_UNKNOWN:
+    ret = list()
+    for char in target:
+        if check(char) is HANGUL:
+            letter = hgtk.text.decompose(char)[:-1]
+            syllable = list()
+            try:
+                syllable.append(hangul.initial[letter[0]])
+                syllable.append(hangul.vowel[letter[1]])
+                syllable.append(hangul.final[letter[2]])
+            except:
+                pass
+            ret.append(tuple(syllable))
+        elif check(char) == LATIN:
+            try:
+                ret.append(latin[char.upper()])
+            except:
+                ret.append(latin[char])
+        elif check(char) == OTHERS:
             raise ValueError
-        return tuple(ret)
+
+    return tuple(ret)
 
 
-def show_one(target, count):
-    if target is support.ON:
-        print("•", end=' ')
-    else:
-        print("◦", end=' ')
-
-    if (count % 2) is 0:
-        print("\n", end='')
-
-
-def show(target, mode):
-    # To prevent data manipulation
-    if type(target) is not tuple:
-        raise RuntimeError
-
-    count = 0
-    if mode == TEXT_HANGUL:
-        for i in target:
+def beautify(target):
+    ret = list()
+    for i in target:
+        if len(i) is 6:
+            ret.append(i)
+        else:
             for j in i:
-                for k in j:
-                    count += 1
-                    show_one(k, count)
-    elif mode == TEXT_LATIN:
-        for i in target:
-            for j in i:
-                count += 1
-                show_one(j, count)
+                if len(j) is 6:
+                    ret.append(j)
+                else:
+                    for k in j:
+                        ret.append(k)
+
+    return tuple(ret)

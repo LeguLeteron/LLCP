@@ -4,8 +4,8 @@ O O | 3 4
 O O | 5 6
 '''
 
-ON = True
-OFF = False
+ON = 1
+OFF = 0
 
 
 class HangulCharts:
@@ -38,14 +38,14 @@ class HangulCharts:
         "ㅣ": (ON, OFF, OFF, ON, ON, OFF),
         "ㅐ": (ON, OFF, ON, ON, ON, OFF),
         "ㅔ": (ON, ON, OFF, ON, ON, OFF),
-        "ㅒ": (OFF, ON, OFF, ON, ON, OFF, ON, OFF, ON, ON, ON, OFF),
+        "ㅒ": ((OFF, ON, OFF, ON, ON, OFF), (ON, OFF, ON, ON, ON, OFF)),
         "ㅖ": (OFF, ON, OFF, OFF, ON, OFF),
         "ㅘ": (ON, OFF, ON, OFF, ON, ON),
-        "ㅙ": (ON, OFF, ON, OFF, ON, ON, ON, OFF, ON, ON, ON, OFF),
+        "ㅙ": ((ON, OFF, ON, OFF, ON, ON), (ON, OFF, ON, ON, ON, OFF)),
         "ㅚ": (ON, ON, OFF, ON, ON, ON),
         "ㅝ": (ON, ON, ON, OFF, ON, OFF),
-        "ㅞ": (ON, ON, ON, OFF, ON, OFF, ON, OFF, ON, ON, ON, OFF),
-        "ㅟ": (ON, ON, OFF, OFF, ON, OFF, ON, OFF, ON, ON, ON, OFF),
+        "ㅞ": ((ON, ON, ON, OFF, ON, OFF), (ON, OFF, ON, ON, ON, OFF)),
+        "ㅟ": ((ON, ON, OFF, OFF, ON, OFF), (ON, OFF, ON, ON, ON, OFF)),
         "ㅢ": (OFF, ON, ON, ON, OFF, ON)
     }
     final = {
@@ -90,18 +90,19 @@ class LatinCharts:
         "T": (OFF, ON, ON, ON, ON, OFF),
         "U": (ON, OFF, OFF, OFF, ON, ON),
         "V": (ON, OFF, ON, OFF, ON, ON),
+        "W": (OFF, ON, ON, ON, OFF, ON),
         "X": (ON, ON, OFF, OFF, ON, ON),
         "Y": (ON, ON, OFF, ON, ON, ON),
         "Z": (ON, OFF, OFF, ON, ON, ON),
         "#": (OFF, ON, OFF, ON, ON, ON),
-        "1": (OFF, ON, OFF, ON, ON, ON, ON, OFF, OFF, OFF, OFF, OFF),
-        "2": (OFF, ON, OFF, ON, ON, ON, ON, OFF, ON, OFF, OFF, OFF),
-        "3": (OFF, ON, OFF, ON, ON, ON, ON, ON, OFF, OFF, OFF, OFF),
-        "4": (OFF, ON, OFF, ON, ON, ON, ON, ON, OFF, ON, OFF, OFF),
-        "5": (OFF, ON, OFF, ON, ON, ON, ON, OFF, OFF, ON, OFF, OFF),
-        "6": (OFF, ON, OFF, ON, ON, ON, ON, ON, ON, OFF, OFF, OFF),
-        "7": (OFF, ON, OFF, ON, ON, ON, ON, ON, ON, ON, OFF, OFF),
-        "8": (OFF, ON, OFF, ON, ON, ON, ON, OFF, ON, ON, OFF, OFF),
-        "9": (OFF, ON, OFF, ON, ON, ON, OFF, ON, ON, OFF, OFF, OFF),
-        "0": (OFF, ON, OFF, ON, ON, ON, OFF, ON, ON, ON, OFF, OFF)
+        "1": ((OFF, ON, OFF, ON, ON, ON), (ON, OFF, OFF, OFF, OFF, OFF)),
+        "2": ((OFF, ON, OFF, ON, ON, ON), (ON, OFF, ON, OFF, OFF, OFF)),
+        "3": ((OFF, ON, OFF, ON, ON, ON), (ON, ON, OFF, OFF, OFF, OFF)),
+        "4": ((OFF, ON, OFF, ON, ON, ON), (ON, ON, OFF, ON, OFF, OFF)),
+        "5": ((OFF, ON, OFF, ON, ON, ON), (ON, OFF, OFF, ON, OFF, OFF)),
+        "6": ((OFF, ON, OFF, ON, ON, ON), (ON, ON, ON, OFF, OFF, OFF)),
+        "7": ((OFF, ON, OFF, ON, ON, ON), (ON, ON, ON, ON, OFF, OFF)),
+        "8": ((OFF, ON, OFF, ON, ON, ON), (ON, OFF, ON, ON, OFF, OFF)),
+        "9": ((OFF, ON, OFF, ON, ON, ON), (OFF, ON, ON, OFF, OFF, OFF)),
+        "0": ((OFF, ON, OFF, ON, ON, ON), (OFF, ON, ON, ON, OFF, OFF))
     }
