@@ -39,7 +39,7 @@ try:
     try:
         string = p.beautify(p.create(args.string))
         for i in string:
-            raw_go_hw = p.RX(i).raw()
+            raw_go_hw = p.RX(data=i).raw()
             p.send(raw_go_hw)
     except:
         raw_go_hw = p.RX().raw()
