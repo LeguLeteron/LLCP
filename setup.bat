@@ -1,4 +1,5 @@
 rd /s /q build
 rd /s /q dist
 
-pyinstaller -i icon.ico -n llcp --onefile main.py
+pyinstaller -i icon.ico -n llcp --onefile --noconsole main.py
+pause

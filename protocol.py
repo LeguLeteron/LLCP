@@ -3,6 +3,7 @@ from braille_support import ON, OFF
 import serial
 
 debug = True
+com_port = ""
 
 # 커서 그랩 상태 : 사용자가 소프트웨어 단에서 커서 그랩을 ON한 상태라면 1, OFF한 상태라면 0
 rx_cursor = ON
