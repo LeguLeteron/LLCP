@@ -42,8 +42,16 @@ class RX:
         for i in range(5):
             ret.append(0)
 
-        for j in self.data:
-            ret.append(j)
+        # Compatibility with hardware
+        # 1 4
+        # 2 5
+        # 3 6
+        ret.append(self.data[0])
+        ret.append(self.data[3])
+        ret.append(self.data[1])
+        ret.append(self.data[4])
+        ret.append(self.data[2])
+        ret.append(self.data[5])
 
         ret.append(self.output)
         ret.append(self.vibrate_image)

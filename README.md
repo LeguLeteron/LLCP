@@ -68,3 +68,6 @@ send() 메소드는 receive() 메소드가 성공적으로 패킷을 받아 True
 >     raw_go_hw = RX(rx_cursor, rx_vibrate, rx_vibrate_text, rx_vibrate_image, rx_output, i).raw()
 >     send(raw_go_hw)
 > ```
+
+## Chrome Native Messaging
+> 
