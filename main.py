@@ -36,9 +36,13 @@ p.debug = args.debug
 
 # Send data to the hardware
 try:
-    string = p.beautify(p.create(args.string))
-    for i in string:
-        raw_go_hw = p.RX(i).raw()
+    try:
+        string = p.beautify(p.create(args.string))
+        for i in string:
+            raw_go_hw = p.RX(i).raw()
+            p.send(raw_go_hw)
+    except:
+        raw_go_hw = p.RX().raw()
         p.send(raw_go_hw)
 except:
     parser.error("incorrect configuration")
