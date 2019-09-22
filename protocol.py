@@ -1,5 +1,6 @@
 from braille import *
 from braille_support import ON, OFF
+import serial
 
 debug = True
 
@@ -26,13 +27,14 @@ tx_output = None
 tx_device = None
 
 class RX:
-    def __init__(self, cursor, vibrate, vibrate_text, vibrate_image, output, data):
+    def __init__(self, data, cursor=rx_cursor, vibrate=rx_vibrate, vibrate_text=rx_vibrate_text,
+                 vibrate_image=rx_vibrate_image, output=rx_output):
+        self.data = data
         self.cursor = ON if cursor else OFF
         self.vibrate = ON if vibrate else OFF
         self.vibrate_text = ON if vibrate_text else OFF
         self.vibrate_image = ON if vibrate_image else OFF
         self.output = ON if output else OFF
-        self.data = data
 
     def raw(self):
         ret = bytearray()
@@ -122,16 +124,3 @@ def receive():
         report()
 
     return status
-
-
-def main():
-    # TODO: 테스트 용도로 입력받으며, 릴리즈 버전에서는 크롬확장으로부터 데이터를 입력받음
-    text = beautify(create(input()))
-
-    for i in text:
-        raw_go_hw = RX(rx_cursor, rx_vibrate, rx_vibrate_text, rx_vibrate_image, rx_output, i).raw()
-        send(raw_go_hw)
-
-
-if __name__ == "__main__":
-    main()
