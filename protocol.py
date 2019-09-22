@@ -27,14 +27,14 @@ tx_output = None
 tx_device = None
 
 class RX:
-    def __init__(self, data, cursor=rx_cursor, vibrate=rx_vibrate, vibrate_text=rx_vibrate_text,
-                 vibrate_image=rx_vibrate_image, output=rx_output):
-        self.data = data
+    def __init__(self, cursor=rx_cursor, vibrate=rx_vibrate, vibrate_text=rx_vibrate_text,
+                 vibrate_image=rx_vibrate_image, output=rx_output, data=(0,0,0,0,0,0)):
         self.cursor = ON if cursor else OFF
         self.vibrate = ON if vibrate else OFF
         self.vibrate_text = ON if vibrate_text else OFF
         self.vibrate_image = ON if vibrate_image else OFF
         self.output = ON if output else OFF
+        self.data = data
 
     def raw(self):
         ret = bytearray()
@@ -101,7 +101,7 @@ def receive():
     # EXAMPLE:
     raw_go_sw = TX(rx_cursor, 0, 0, rx_output, 1001).raw()
     # 수신 성공 시 True, 실패 시 False
-    status = False
+    status = True
 
     if debug:
         print("Receiving packet: ", raw_go_sw)
