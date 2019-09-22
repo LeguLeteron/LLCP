@@ -3,7 +3,9 @@ from braille_support import ON, OFF
 import serial
 
 debug = True
+BaudRate = 9600
 com_port = ""
+LLGD = serial.Serial(com_port, BaudRate)
 
 # 커서 그랩 상태 : 사용자가 소프트웨어 단에서 커서 그랩을 ON한 상태라면 1, OFF한 상태라면 0
 rx_cursor = ON
@@ -97,16 +99,25 @@ def send(packet):
         print("Sending packet: ", packet)
 
     # TODO: 패킷 송신 기능 구현
+	LLGD_packet = [0x02]
+	LLGD_packet.append(packet)
+	LLGD_packet.append(0x03)
 
+	LLGD.write(LLGD_packet)
+    
+	LLGD.write(packet)
     # 송신 완료(ACK) 패킷이 올 때까지
     while not receive():
         pass
-
 
 # TODO: 기기로부터 UART로 패킷을 전송받는 함수이다.
 def receive():
     global tx_cursor, tx_vibrate_text, tx_vibrate_image, tx_output, tx_device
     # TODO: 패킷 수신 기능 구현
+	tx = LLGD.read(10)
+	
+	if tx[0] == 0x02 and tx[9] == 0x03 :
+		raw_go_sw = tx[0:9]
     # EXAMPLE:
     raw_go_sw = TX(rx_cursor, 0, 0, rx_output, 1001).raw()
     # 수신 성공 시 True, 실패 시 False
