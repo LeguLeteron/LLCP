@@ -1,3 +1,5 @@
+![icon](icon.ico)
+
 # LLCP - The LeguLeteron Communication Protocol
 
 Copyright (C) 2019 The LeguLeteron Project
