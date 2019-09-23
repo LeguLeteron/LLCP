@@ -15,6 +15,8 @@ button, values = window.Read()
 
 p.com_port = values[0]
 
+window.Disappear()
+
 jsonString = sys.stdin.read().strip("\n")
 dict = json.loads(jsonString)
 
