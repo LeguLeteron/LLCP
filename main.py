@@ -29,17 +29,28 @@ def sendMessage(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
 
-def loadProtocol(dict):
-    p.com_port = bool(dict['com_port'])
-    p.rx_cursor = bool(dict['cursor'])
-    p.rx_vibrate = bool(dict['vibrate'])
-    p.rx_vibrate_text = bool(dict['vibrate_text'])
-    p.rx_vibrate_image = bool(dict['vibrate_image'])
-    p.rx_output = bool(dict['output'])
-    p.debug = bool(dict['string'])
+def loadProtocol(receivedDict):
+    p.com_port = bool(receivedDict['com_port'])
+    p.rx_cursor = bool(receivedDict['cursor'])
+    p.rx_vibrate = bool(receivedDict['vibrate'])
+    p.rx_vibrate_text = bool(receivedDict['vibrate_text'])
+    p.rx_vibrate_image = bool(receivedDict['vibrate_image'])
+    p.rx_output = bool(receivedDict['output'])
+    p.debug = bool(receivedDict['string'])
+
+def sendToHardware(message):
+    try:
+        string = p.beautify(p.create(message))
+        for i in string:
+            raw_go_hw = p.RX(data=i).raw()
+            p.send(raw_go_hw)
+    except:
+        raw_go_hw = p.RX().raw()
+        p.send(raw_go_hw)
 
 while True:
     receivedMessage = getMessage()
+    loadProtocol(receivedMessage)
     with open("debug.txt", "wt") as f:
         f.write(receivedMessage)
     sendMessage(encodeMessage(receivedMessage))
