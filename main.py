@@ -1,53 +1,62 @@
-import json
-import protocol as p
-import PySimpleGUI as sg
+#!/usr/bin/env python
+
 import sys
+import json
+import struct
 
-# Get port from the user via GUI
-layout = [
-    [sg.Text('레구레테론 하드웨어가 연결된 COM 포트 값을 입력하세요.')],
-    [sg.InputText()],
-    [sg.Submit('확인')]
-]
+try:
+    # Python 3.x version
+    # Read a message from stdin and decode it.
+    def getMessage():
+        rawLength = sys.stdin.buffer.read(4)
+        if len(rawLength) == 0:
+            sys.exit(0)
+        messageLength = struct.unpack('@I', rawLength)[0]
+        message = sys.stdin.buffer.read(messageLength).decode('utf-8')
+        return json.loads(message)
 
-window = sg.Window("LeguLeteron").Layout(layout)
-button, values = window.Read()
+    # Encode a message for transmission,
+    # given its content.
+    def encodeMessage(messageContent):
+        encodedContent = json.dumps(messageContent).encode('utf-8')
+        encodedLength = struct.pack('@I', len(encodedContent))
+        return {'length': encodedLength, 'content': encodedContent}
 
-p.com_port = values[0]
+    # Send an encoded message to stdout
+    def sendMessage(encodedMessage):
+        sys.stdout.buffer.write(encodedMessage['length'])
+        sys.stdout.buffer.write(encodedMessage['content'])
+        sys.stdout.buffer.flush()
 
-window.Disappear()
+    while True:
+        receivedMessage = getMessage()
+        if receivedMessage == "ping":
+            sendMessage(encodeMessage("pong3"))
+except AttributeError:
+    # Python 2.x version (if sys.stdin.buffer is not defined)
+    # Read a message from stdin and decode it.
+    def getMessage():
+        rawLength = sys.stdin.read(4)
+        if len(rawLength) == 0:
+            sys.exit(0)
+        messageLength = struct.unpack('@I', rawLength)[0]
+        message = sys.stdin.read(messageLength)
+        return json.loads(message)
 
-jsonString = sys.stdin.read().strip("\n")
-dict = json.loads(jsonString)
+    # Encode a message for transmission,
+    # given its content.
+    def encodeMessage(messageContent):
+        encodedContent = json.dumps(messageContent)
+        encodedLength = struct.pack('@I', len(encodedContent))
+        return {'length': encodedLength, 'content': encodedContent}
 
-# Set configurations in protocol
-p.rx_cursor = bool(dict['cursor'])
-p.rx_vibrate = bool(dict['vibrate'])
-p.rx_vibrate_text = bool(dict['vibrate_text'])
-p.rx_vibrate_image = bool(dict['vibrate_image'])
-p.rx_output = bool(dict['output'])
-p.debug = bool(dict['debug'])
+    # Send an encoded message to stdout
+    def sendMessage(encodedMessage):
+        sys.stdout.write(encodedMessage['length'])
+        sys.stdout.write(encodedMessage['content'])
+        sys.stdout.flush()
 
-
-# # Send data to the hardware
-# try:
-#     string = p.beautify(p.create(dict['string']))
-#     for i in string:
-#         raw_go_hw = p.RX(data=i).raw()
-#         p.send(raw_go_hw)
-# except:
-#     raw_go_hw = p.RX().raw()
-#     p.send(raw_go_hw)
-
-result = [
-    [sg.Text("cursor: " + str(p.rx_cursor))],
-    [sg.Text("vibrate: " + str(p.rx_vibrate))],
-    [sg.Text("vibrate_text: " + str(p.rx_vibrate_text))],
-    [sg.Text("vibrate_image: " + str(p.rx_vibrate_image))],
-    [sg.Text("output: " + str(p.rx_output))],
-    [sg.Text("debug: " + str(p.debug))],
-    [sg.Text("string: " + dict['string'])],
-    [sg.OK()]
-]
-result_window = sg.Window("LeguLeteron").layout(result)
-result_window.Read()
+    while True:
+        receivedMessage = getMessage()
+        if receivedMessage == "ping":
+            sendMessage(encodeMessage("pong2"))
