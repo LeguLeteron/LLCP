@@ -1,9 +1,0 @@
-{
-  "name": "com.leguleteron.llcp",
-  "description": "The LeguLeteron Communication Protocol",
-  "path": "llcp-host.bat",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://cicfmclhikppcdbgoijngpdgdhbnfhpk/"
-  ]
-}
