@@ -1,9 +1,9 @@
 {
   "name": "com.leguleteron.llcp",
   "description": "The LeguLeteron Communication Protocol",
-  "path": "../dist/LeguLeteron.exe",
+  "path": "HOST_PATH",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
+    "chrome-extension://knmdhlgkebpenmgbchacjdpbknoollcg/"
   ]
 }

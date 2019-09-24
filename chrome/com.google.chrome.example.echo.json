@@ -1,9 +1,0 @@
-{
-  "name": "com.google.chrome.example.echo",
-  "description": "The LeguLeteron Communication Protocol",
-  "path": "LeguLeteron.exe",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
-  ]
-}

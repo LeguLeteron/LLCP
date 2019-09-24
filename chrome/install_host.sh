@@ -21,7 +21,7 @@ HOST_NAME=com.leguleteron.llcp
 # Create directory to store native messaging host.
 mkdir -p "$TARGET_DIR"
 # Copy native messaging host manifest.
-cp "$DIR/$HOST_NAME.json" "$TARGET_DIR"
+cp "$DIR/$HOST_NAME-unix.json" "$TARGET_DIR"
 # Update host path in the manifest.
 HOST_PATH=$DIR/../main.py
 ESCAPED_HOST_PATH=${HOST_PATH////\\/}
