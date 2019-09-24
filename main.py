@@ -3,6 +3,8 @@
 import sys
 import json
 import struct
+import protocol as p
+
 
 # Python 3.x version
 # Read a message from stdin and decode it.
@@ -27,6 +29,17 @@ def sendMessage(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
 
+def loadProtocol(dict):
+    p.com_port = bool(dict['com_port'])
+    p.rx_cursor = bool(dict['cursor'])
+    p.rx_vibrate = bool(dict['vibrate'])
+    p.rx_vibrate_text = bool(dict['vibrate_text'])
+    p.rx_vibrate_image = bool(dict['vibrate_image'])
+    p.rx_output = bool(dict['output'])
+    p.debug = bool(dict['string'])
+
 while True:
     receivedMessage = getMessage()
+    with open("debug.txt", "wt") as f:
+        f.write(receivedMessage)
     sendMessage(encodeMessage(receivedMessage))
