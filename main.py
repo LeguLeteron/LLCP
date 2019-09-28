@@ -4,14 +4,16 @@ import sys
 import json
 import struct
 import protocol as p
+import threading
 
+receivedMessage = ""
 
 # Python 3.x version
 # Read a message from stdin and decode it.
 def getMessage():
     rawLength = sys.stdin.buffer.read(4)
     if len(rawLength) == 0:
-        sys.exit(0)
+        return None
     messageLength = struct.unpack('@I', rawLength)[0]
     message = sys.stdin.buffer.read(messageLength).decode('utf-8')
     return json.loads(message)
@@ -36,9 +38,9 @@ def loadProtocol(receivedDict):
     p.rx_vibrate_text = bool(receivedDict['vibrate_text'])
     p.rx_vibrate_image = bool(receivedDict['vibrate_image'])
     p.rx_output = bool(receivedDict['output'])
-    p.debug = bool(receivedDict['string'])
+    p.rx_string = receivedDict['string']
 
-def sendToHardware(message):
+def send_to_hardware(message=p.rx_string):
     try:
         string = p.beautify(p.create(message))
         for i in string:
@@ -48,9 +50,20 @@ def sendToHardware(message):
         raw_go_hw = p.RX().raw()
         p.send(raw_go_hw)
 
-while True:
+def recieve_from_software(message="ACK"):
+    global receivedMessage
+
     receivedMessage = getMessage()
-    loadProtocol(receivedMessage)
-    with open("debug.txt", "wt") as f:
-        f.write(receivedMessage)
-    sendMessage(encodeMessage(receivedMessage))
+    sendMessage(encodeMessage(message))
+
+if __name__ == "__main__":
+    while True:
+        state = p.receive()
+
+        recieve_from_software()
+        send_to_hardware()
+
+        sendMessage(encodeMessage("ACK"))
+
+        if state:
+            p.send(p.RX(0,0,0,0,0).raw())

@@ -4,11 +4,11 @@ import serial
 
 debug = True
 baud_rate = 9600
-com_port = ""
+com_port = "/dev/ttyACM0"
 try:
-    LLGD = serial.Serial(com_port, baud_rate)
+    LLGD = serial.Serial(com_port, baud_rate, timeout=None)
 except:
-    pass
+    print("No devie found. You may experience problems.")
 
 # 커서 그랩 상태 : 사용자가 소프트웨어 단에서 커서 그랩을 ON한 상태라면 1, OFF한 상태라면 0
 rx_cursor = ON
@@ -20,6 +20,8 @@ rx_vibrate_text = ON
 rx_vibrate_image = ON
 # 점자 출력 상태 : 점자를 출력해야되는 상태라면 1, 그렇지 않은 상태라면 0
 rx_output = ON
+# String
+rx_string = ""
 
 # 커서 그랩 상태: 디바이스의 실재 커서 그랩 상태 알림. 1이면 커서그랩 ON이고 0이면 커서그랩 OFF
 tx_cursor = None
@@ -86,6 +88,9 @@ class TX:
     def raw(self):
         ret = bytearray()
 
+        # Start
+        ret.append(0x02)
+
         for i in self.device:
             ret.append(int(i))
 
@@ -94,8 +99,13 @@ class TX:
         ret.append(self.vibrate_text)
         ret.append(self.cursor)
 
+        # Stop
+        ret.append(0x03)
+
         return bytes(ret)
 
+def is_special_packet(packet):
+    pass
 
 # 현재 설정된 데이터 변수들의 값을 콘솔에 출력하는 함수이다.
 def report():
@@ -111,29 +121,29 @@ def send(packet):
     # 패킷 송신 기능
     LLGD.write(packet)
 
-    # 송신 완료(ACK) 패킷이 올 때까지
-    while not receive():
-        pass
-
-
 # TODO: 기기로부터 UART로 패킷을 전송받는 함수이다.
-def receive():
+def receive(return_packet=False):
     global tx_cursor, tx_vibrate_text, tx_vibrate_image, tx_output, tx_device
-    # TODO: 패킷 수신 기능 구현
-    tx = LLGD.read(10)
 
-    if tx[0] == 0x02 and tx[9] == 0x03:
-        raw_go_sw = tx[0:9]
-    # EXAMPLE:
-    raw_go_sw = TX(rx_cursor, 0, 0, rx_output, 1001).raw()
+    # TODO: 패킷 수신 기능 구현
+    tx = LLGD.read()[0]
+    tx = bin(tx)[2:]
+
     # 수신 성공 시 True, 실패 시 False
-    status = True
+    status = False
+
+    if not (tx[:4] == "0010" and tx[-4:] == "0011"):
+        return status
+
+    # Strip down the packet
+    raw_go_sw = tx[4:-4]
 
     if debug:
         print("Receiving packet: ", raw_go_sw)
 
-    if type(raw_go_sw) is not bytes:
-        raise RuntimeError
+    if all(i == 0 for i in raw_go_sw):
+        status = True
+        return status
 
     # 수신된 바이트 형태의 패킷을 정수로 치환하여 리스트에 넣는다.
     packet = [i for i in raw_go_sw]
@@ -148,5 +158,3 @@ def receive():
 
     if debug:
         report()
-
-    return status
